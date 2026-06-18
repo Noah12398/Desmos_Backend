@@ -4,7 +4,16 @@ import { eq } from 'drizzle-orm';
 import { dbAction } from '../../utils/helpers.js';
 
 // Find a user by phone number (wrapped in dbAction)
-export const findUserByPhone = dbAction(async (phone) => {
+export const findUserByPhone = (phone) =>
+  db.select({
+    id: users.id,
+    fcm_token: users.fcm_token
+  })
+  .from(users)
+  .where(eq(users.phone, phone))
+  .limit(1);
+
+export const findUserDetailsByPhone = dbAction(async (phone) => {
   const [user] = await db
     .select()
     .from(users)

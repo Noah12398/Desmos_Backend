@@ -1,6 +1,8 @@
 import { createUserSchema } from './../user/user.schema.js';
 import * as authRepo from './auth.repo.js';
 import * as userRepo from '../user/user.repo.js';
+import { NotFoundError } from '../../utils/errors.js';
+
 /**
  * Handle user sign-in or registration
  * @param {object} data - Raw request body
@@ -22,4 +24,12 @@ export async function signin(data) {
     phone: data.phone,
     fcm_token: data.fcm_token,
   });
+}
+
+export async function me(phone) {
+  const user = await userRepo.findUserDetailsByPhone(phone);
+  if (!user) {
+    throw new NotFoundError('User not found');
+  }
+  return user;
 }
