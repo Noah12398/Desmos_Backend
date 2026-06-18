@@ -1,4 +1,3 @@
-import { createUserSchema } from './../user/user.schema.js';
 import * as authRepo from './auth.repo.js';
 import * as userRepo from '../user/user.repo.js';
 import { NotFoundError } from '../../utils/errors.js';
