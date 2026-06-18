@@ -4,7 +4,8 @@ import 'dotenv/config';
 import { quickEnv } from '../utils/helpers.js';
 
 const pool = new Pool({
-  connectionString: quickEnv('SUPABASE_URL'),
+  connectionString: quickEnv('DATABASE_URL'),
+  ssl: { rejectUnauthorized: false },
 });
 
 export const db = drizzle(pool);
