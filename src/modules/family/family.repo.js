@@ -3,16 +3,39 @@ import { familyGroups,familyMembers,users } from '../../db/schema.js';
 import { dbAction } from '../../utils/helpers.js';
 import { eq ,and} from 'drizzle-orm';
 
-// Create a new family group (wrapped in dbAction for error handling)
-export const createFamily = dbAction(async ({ name, owner_id }) => {
-  const [newFamily] = await db
-    .insert(familyGroups)
+export const createFamilyWithMember = dbAction(async ({ name, owner_id }) => {
+  return await db.transaction(async (tx) => {
+    const [newFamily] = await tx
+      .insert(familyGroups)
+      .values({
+        name,
+        ownerId: owner_id,
+      })
+      .returning();
+
+    await tx
+      .insert(familyMembers)
+      .values({
+        groupId: newFamily.id,
+        userId: owner_id,
+        role: 'OWNER',
+      });
+
+    return newFamily;
+  });
+});
+
+
+export const addFamilyMember = dbAction(async ({groupId,userId,role}) => {
+  const [member] = await db
+    .insert(familyMembers)
     .values({
-      name,
-      ownerId: owner_id,
+      groupId,
+      userId,
+      role
     })
     .returning();
-  return newFamily;
+  return member;
 });
 
 export const getFamilyMembers = dbAction(async ({ id: groupId }) => {
