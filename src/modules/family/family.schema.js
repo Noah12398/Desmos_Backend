@@ -8,3 +8,12 @@ export const createFamilySchema = z.object({
   // owner_id comes from req.user.id (injected by controller), not from request body
   owner_id: z.string({ required_error: "Owner Id is required" }),
 }).strict();
+
+export const familyIdSchema = z.object({
+  id: z.uuid()
+});
+
+export const removeMemberSchema = z.object({
+  id: z.uuid(),
+  userId: z.uuid()
+});

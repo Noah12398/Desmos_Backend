@@ -4,3 +4,12 @@ export async function createFamily(validated) {
   const family = await familyRepo.createFamily(validated);
   return family;
 }
+
+export async function getFamilyMembers(validated){
+  const family=await familyRepo.getFamilyMembers(validated);
+  return family;
+}
+export async function removeFamilyMember(validated){
+  const member=await familyRepo.removeFamilyMember(validated);
+  return member;
+}
