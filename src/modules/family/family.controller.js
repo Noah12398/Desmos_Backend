@@ -40,7 +40,7 @@ export async function removeFamilyMember(req, res, next) {
 export async function getFamilies(req, res, next) {
   try {
     const userId=req.user.id;
-    const families = await familyService.getFamilies(userId);
+    const families = await familyService.getFamilies({ userId });
     return ok(res, families);
   } catch (error) {
     next(error);
@@ -49,7 +49,7 @@ export async function getFamilies(req, res, next) {
 
 export async function inviteUser(req,res,next){
   try{
-    const {groupId}=req.params; 
+    const {id: groupId}=req.params; 
     const {phone}=req.body;
     const inviterId=req.user.id;
     const validated=inviteSchema.parse({groupId,inviterId,phone});

@@ -81,7 +81,7 @@ export const getFamilies = dbAction(async ({ userId }) => {
 });
 
 export const isOwner=dbAction(async ({userId,groupId})=>{
-  const owner=await db.select()
+  const [owner]=await db.select()
     .from(familyMembers)
     .where(and(eq(familyMembers.userId,userId),eq(familyMembers.groupId,groupId),eq(familyMembers.role,'OWNER')));
   return owner;

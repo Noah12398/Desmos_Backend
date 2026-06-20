@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import './config/firebase.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import familyRoutes from './modules/family/family.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
