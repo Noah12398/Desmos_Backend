@@ -13,3 +13,7 @@ export async function removeFamilyMember(validated){
   const member=await familyRepo.removeFamilyMember(validated);
   return member;
 }
+export async function getFamilies(validated){
+  const families=await familyRepo.getFamilies(validated);
+  return families;
+}

@@ -61,3 +61,20 @@ export const removeFamilyMember = dbAction(async ({ id: groupId, userId }) => {
     .where(and(eq(familyMembers.groupId, groupId),eq(familyMembers.userId, userId))).returning();
   return member;
 });
+
+export const getFamilies = dbAction(async ({ userId }) => {
+  const families = await db
+    .select({
+      id: familyGroups.id,
+      name: familyGroups.name,
+      role: familyMembers.role,
+    })
+    .from(familyGroups)
+    .innerJoin(
+      familyMembers,
+      eq(familyGroups.id, familyMembers.groupId)
+    )
+    .where(eq(familyMembers.userId, userId));
+
+  return families;
+});

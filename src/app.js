@@ -22,7 +22,7 @@ app.get('/health', async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/family', familyRoutes);
+app.use('/api/families', familyRoutes);
 // Error handling middleware (must be registered last)
 app.use(errorHandler);
 

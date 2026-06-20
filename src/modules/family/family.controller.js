@@ -36,3 +36,13 @@ export async function removeFamilyMember(req, res, next) {
     next(error);
   }
 }
+
+export async function getFamilies(req, res, next) {
+  try {
+    const userId=req.user.id;
+    const families = await familyService.getFamilies(userId);
+    return ok(res, families);
+  } catch (error) {
+    next(error);
+  }
+}
