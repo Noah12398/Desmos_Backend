@@ -11,9 +11,18 @@ export const createFamilySchema = z.object({
 
 export const familyIdSchema = z.object({
   id: z.uuid()
-});
+}).strict();
 
 export const removeMemberSchema = z.object({
   id: z.uuid(),
   userId: z.uuid()
-});
+}).strict();
+
+export const inviteSchema = z.object({
+  groupId:z.uuid(),
+  inviterId:z.uuid(),
+  phone:z.string()
+    .regex(/^[0-9]{10}$/,"Invalid phone number")
+    .min(10,"Phone number is too short")
+    .max(10,"Phone number is too long").trim(),
+}).strict();

@@ -1,4 +1,4 @@
-import { createFamilySchema,familyIdSchema,removeMemberSchema } from './family.schema.js';
+import { createFamilySchema,familyIdSchema,removeMemberSchema,inviteSchema } from './family.schema.js';
 import { ok } from '../../utils/helpers.js';
 import * as familyService from './family.service.js';
 
@@ -43,6 +43,19 @@ export async function getFamilies(req, res, next) {
     const families = await familyService.getFamilies(userId);
     return ok(res, families);
   } catch (error) {
+    next(error);
+  }
+}
+
+export async function inviteUser(req,res,next){
+  try{
+    const {groupId}=req.params; 
+    const {phone}=req.body;
+    const inviterId=req.user.id;
+    const validated=inviteSchema.parse({groupId,inviterId,phone});
+    const invite=await familyService.inviteUser(validated);
+    return ok(res,invite);
+  }catch(error){
     next(error);
   }
 }

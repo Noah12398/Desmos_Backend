@@ -1,7 +1,8 @@
 import { db } from '../../config/db.js';
-import { familyGroups,familyMembers,users } from '../../db/schema.js';
+import { familyGroups,familyMembers,users,familyInvites} from '../../db/schema.js';
 import { dbAction } from '../../utils/helpers.js';
 import { eq ,and} from 'drizzle-orm';
+import { NotFoundError } from '../../utils/errors.js';
 
 export const createFamilyWithMember = dbAction(async ({ name, owner_id }) => {
   return await db.transaction(async (tx) => {
@@ -77,4 +78,49 @@ export const getFamilies = dbAction(async ({ userId }) => {
     .where(eq(familyMembers.userId, userId));
 
   return families;
+});
+
+export const isOwner=dbAction(async ({userId,groupId})=>{
+  const owner=await db.select()
+    .from(familyMembers)
+    .where(and(eq(familyMembers.userId,userId),eq(familyMembers.groupId,groupId),eq(familyMembers.role,'OWNER')));
+  return owner;
+})
+
+export const getGroupName=dbAction(async ({groupId})=>{
+  const [group]=await db.select({name:familyGroups.name})
+    .from(familyGroups)
+    .where(eq(familyGroups.id,groupId));
+  return group;
+})
+
+export const inviteUser = dbAction(async ({ groupId, inviterId, phone }) => {
+  return await db.transaction(async (tx) => {
+    const [user] = await tx
+      .select({
+        id: users.id,
+        fcmToken: users.fcm_token
+      })
+      .from(users)
+      .where(eq(users.phone, phone));
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const [invite] = await tx
+      .insert(familyInvites)
+      .values({
+        groupId,
+        invitedBy: inviterId,
+        invitedUserId: user.id,
+        status: 'PENDING'
+      })
+      .returning();
+
+    return {
+      invite,
+      user
+    };
+  });
 });
