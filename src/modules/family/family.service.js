@@ -1,6 +1,8 @@
 import * as familyRepo from './family.repo.js';
-import { ForbiddenError } from '../../utils/errors.js';
 import { sendPushNotification } from '../notification/notification.service.js';
+import * as authRepo from '../auth/auth.repo.js';
+import { ForbiddenError, NotFoundError } from '../../utils/errors.js';
+
 
 export async function createFamily(validated) {
   const family = await familyRepo.createFamilyWithMember(validated);
@@ -20,15 +22,20 @@ export async function getFamilies(validated){
   return families;
 }
 
-export async function inviteUser(validated){
-  const owner=await familyRepo.isOwner({ userId: validated.inviterId, groupId: validated.groupId });
+
+export async function inviteUser(validated) {
+  const owner = await familyRepo.isOwner({ userId: validated.inviterId, groupId: validated.groupId });
   if (!owner) throw new ForbiddenError('Only owner can invite');
-  const {invite,user}=await familyRepo.inviteUser(validated);
+
+  const [user] = await authRepo.findUserByPhone(validated.phone);
+  if (!user) throw new NotFoundError('User not found');
+  const invite = await familyRepo.inviteUser({ ...validated, userId: user.id });
   
   const groupName = await familyRepo.getGroupName({ groupId: validated.groupId });
   const message = `You have been invited to join a ${groupName.name} family`;
-  if (user.fcmToken) {
-    await sendPushNotification(user.fcmToken, 'Family Invitation', message);
+  
+  if (user.fcm_token) {
+    await sendPushNotification(user.fcm_token, 'Family Invitation', message);
   }
 
   return invite;

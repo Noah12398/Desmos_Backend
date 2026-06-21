@@ -94,33 +94,16 @@ export const getGroupName=dbAction(async ({groupId})=>{
   return group;
 })
 
-export const inviteUser = dbAction(async ({ groupId, inviterId, phone }) => {
-  return await db.transaction(async (tx) => {
-    const [user] = await tx
-      .select({
-        id: users.id,
-        fcmToken: users.fcm_token
-      })
-      .from(users)
-      .where(eq(users.phone, phone));
+export const inviteUser = dbAction(async ({ groupId, inviterId, userId }) => {
+  const [invite] = await db
+    .insert(familyInvites)
+    .values({
+      groupId,
+      invitedBy: inviterId,
+      invitedUserId: userId,
+      status: 'PENDING'
+    })
+    .returning();
 
-    if (!user) {
-      throw new NotFoundError('User not found');
-    }
-
-    const [invite] = await tx
-      .insert(familyInvites)
-      .values({
-        groupId,
-        invitedBy: inviterId,
-        invitedUserId: user.id,
-        status: 'PENDING'
-      })
-      .returning();
-
-    return {
-      invite,
-      user
-    };
-  });
+  return invite;
 });
