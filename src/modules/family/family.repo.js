@@ -2,7 +2,6 @@ import { db } from '../../config/db.js';
 import { familyGroups,familyMembers,users,familyInvites} from '../../db/schema.js';
 import { dbAction } from '../../utils/helpers.js';
 import { eq ,and} from 'drizzle-orm';
-import { NotFoundError } from '../../utils/errors.js';
 
 export const createFamilyWithMember = dbAction(async ({ name, owner_id }) => {
   return await db.transaction(async (tx) => {

@@ -26,3 +26,11 @@ export const updateFcmToken = dbAction(async (userId, fcm_token) => {
     .returning();
   return updatedUser;
 });
+
+export const getUserNameById = dbAction(async ({ userId }) => {
+  const [user] = await db
+    .select({ name: users.name })
+    .from(users)
+    .where(eq(users.id, userId));
+  return user;
+});
