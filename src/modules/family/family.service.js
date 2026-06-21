@@ -24,15 +24,17 @@ export async function getFamilies(validated){
 
 
 export async function inviteUser(validated) {
-  const owner = await familyRepo.isOwner({ userId: validated.inviterId, groupId: validated.groupId });
-  if (!owner) throw new ForbiddenError('Only owner can invite');
+  const groupInfo = await familyRepo.getGroupOwnerDetails({ 
+    userId: validated.inviterId, 
+    groupId: validated.groupId 
+  });
+  if (!groupInfo) throw new ForbiddenError('Only owner can invite');
 
   const [user] = await authRepo.findUserByPhone(validated.phone);
   if (!user) throw new NotFoundError('User not found');
   const invite = await familyRepo.inviteUser({ ...validated, userId: user.id });
   
-  const groupName = await familyRepo.getGroupName({ groupId: validated.groupId });
-  const message = `You have been invited to join a ${groupName.name} family`;
+  const message = `You have been invited to join a ${groupInfo.groupName} family`;
   
   if (user.fcm_token) {
     await sendPushNotification(user.fcm_token, 'Family Invitation', message);

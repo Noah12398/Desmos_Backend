@@ -93,6 +93,21 @@ export const getGroupName=dbAction(async ({groupId})=>{
   return group;
 })
 
+export const getGroupOwnerDetails = dbAction(async ({ userId, groupId }) => {
+  const [result] = await db
+    .select({ groupName: familyGroups.name })
+    .from(familyMembers)
+    .innerJoin(familyGroups, eq(familyMembers.groupId, familyGroups.id))
+    .where(
+      and(
+        eq(familyMembers.userId, userId),
+        eq(familyMembers.groupId, groupId),
+        eq(familyMembers.role, 'OWNER')
+      )
+    );
+  return result;
+});
+
 export const inviteUser = dbAction(async ({ groupId, inviterId, userId }) => {
   const [invite] = await db
     .insert(familyInvites)
