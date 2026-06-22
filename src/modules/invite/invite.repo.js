@@ -17,3 +17,20 @@ export const getInvites = dbAction(async ({ userId }) => {
 
   return invites;
 });
+
+export const getInviteById = dbAction(async ({ inviteId }) => {
+  const [invite] = await db
+    .select()
+    .from(familyInvites)
+    .where(eq(familyInvites.id, inviteId));
+  return invite;
+});
+
+export const updateInvite = dbAction(async (inviteId, status) => {
+  const [invite] = await db
+    .update(familyInvites)
+    .set({ status })
+    .where(eq(familyInvites.id, inviteId))
+    .returning();
+  return invite;
+});
