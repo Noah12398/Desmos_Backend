@@ -1,7 +1,6 @@
 import {z} from 'zod';
 
 export const contactSyncSchema = z.object({
-  userId: z.uuid(),
   contacts: z.array(
     z.object({
       phoneHash: z.string({required_error:"Phone hash is required"}).min(1,"Phone hash cannot be empty").trim(),

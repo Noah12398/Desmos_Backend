@@ -4,12 +4,9 @@ import {contactSyncSchema} from './contact.schema.js';
 
 export async function syncContacts(req, res, next) {
   try {
-    const validated = contactSyncSchema.parse({
-      userId: req.user.id,
-      contacts: req.body.contacts,
-    });
+    const validated = contactSyncSchema.parse(req.body);
 
-    const result = await contactService.syncContacts(validated);
+    const result = await contactService.syncContacts({ ...validated, userId: req.user.id });
 
     return ok(res, result);
   } catch (error) {

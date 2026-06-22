@@ -22,6 +22,7 @@ export async function signin(data) {
     name: data.name,
     phone: data.phone,
     fcm_token: data.fcm_token,
+    userId: data.userId
   });
 }
 

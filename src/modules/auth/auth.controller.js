@@ -5,11 +5,8 @@ import * as authService from './auth.service.js';
 export async function signin(req, res, next) {
   try {
     // Validate request body and merge with verified phone
-    const validated = createUserSchema.parse({
-      ...req.body,
-      phone: req.user.phone,
-    });
-    const user = await authService.signin(validated);
+    const validated = createUserSchema.parse(req.body);
+    const user = await authService.signin({ ...validated, phone: req.user.phone, userId: req.user.id });
     return ok(res, user);
   } catch (error) {
     next(error);

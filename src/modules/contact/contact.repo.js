@@ -5,12 +5,12 @@ import { sql } from 'drizzle-orm';
 
 export const syncContacts = dbAction(
   async ({ userId, contacts: contactsToSync }) => {
-
+    const now = new Date();
     const rows = contactsToSync.map(contact => ({
       ownerUserId: userId,
       phoneHash: contact.phoneHash,
       displayName: contact.displayName,
-      updatedAt: new Date(),
+      updatedAt: now,
     }));
 
     const inserted = await db
@@ -20,7 +20,7 @@ export const syncContacts = dbAction(
         target: [contacts.ownerUserId, contacts.phoneHash],
         set: {
           displayName: sql`excluded.display_name`,
-          updatedAt: new Date(),
+          updatedAt: now,
         },
       });
 
