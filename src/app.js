@@ -4,6 +4,7 @@ import './config/firebase.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import familyRoutes from './modules/family/family.routes.js';
 import inviteRoutes from './modules/invite/invite.routes.js';
+import contactRoutes from './modules/contact/contact.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import { db } from './config/db.js';
 import { sql } from 'drizzle-orm';
@@ -26,6 +27,7 @@ app.get('/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/families', familyRoutes);
 app.use('/api/invites', inviteRoutes);
+app.use('/api/contacts',contactRoutes)
 // Error handling middleware (must be registered last)
 app.use(errorHandler);
 
