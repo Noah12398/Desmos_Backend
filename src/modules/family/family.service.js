@@ -1,6 +1,7 @@
 import * as familyRepo from './family.repo.js';
 import { sendPushNotification } from '../notification/notification.service.js';
 import * as authRepo from '../auth/auth.repo.js';
+import { normalizePhone } from '../../utils/normalizePhone.js';
 import { ForbiddenError, NotFoundError } from '../../utils/errors.js';
 
 export async function createFamily(validated) {
@@ -30,7 +31,8 @@ export async function inviteUser(validated) {
   });
   if (!groupInfo) throw new ForbiddenError('Only owner can invite');
 
-  const [user] = await authRepo.findUserByPhone(validated.phone);
+  const normalizedPhone = normalizePhone(validated.phone);
+  const user = await authRepo.findUserByPhone(normalizedPhone);
   if (!user) throw new NotFoundError('User not found');
   const invite = await familyRepo.inviteUser({ ...validated, userId: user.id });
   

@@ -3,7 +3,6 @@ import { users } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { dbAction } from '../../utils/helpers.js';
 
-// Find a user by phone number (wrapped in dbAction)
 export const findUserByPhone = (phone) =>
   db.select({
     id: users.id,
