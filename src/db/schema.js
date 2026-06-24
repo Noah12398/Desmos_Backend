@@ -5,8 +5,8 @@ import {
   text, 
   timestamp, 
   primaryKey,
-  uniqueIndex,
-  unique
+  unique,
+  index
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -23,13 +23,30 @@ export const familyGroups = pgTable("family_groups", {
   ownerId: uuid("owner_id").references(() => users.id, { onDelete: 'cascade' })
 });
 
-export const familyMembers = pgTable("family_members", {
-  groupId: uuid("group_id").notNull().references(() => familyGroups.id, { onDelete: 'cascade' }),
-  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  role: text("role", { enum: ['OWNER', 'MEMBER'] }).notNull()
-}, (t) => [
-  primaryKey({ columns: [t.groupId, t.userId] })
-]);
+export const familyMembers = pgTable(
+  "family_members",
+  {
+    groupId: uuid("group_id")
+      .notNull()
+      .references(() => familyGroups.id, { onDelete: "cascade" }),
+
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+
+    role: text("role", {
+      enum: ["OWNER", "MEMBER"],
+    }).notNull(),
+  },
+  (t) => [
+    primaryKey({
+      columns: [t.groupId, t.userId],
+    }),
+
+    index("idx_family_members_user")
+      .on(t.userId),
+  ]
+);
 
 export const contacts = pgTable("contacts", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -38,7 +55,11 @@ export const contacts = pgTable("contacts", {
   displayName: text("display_name"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
 }, (t) => [
-  unique("idx_contacts_owner_phone").on(t.ownerUserId, t.phoneHash),
+  unique("idx_contacts_owner_phone")
+    .on(t.ownerUserId, t.phoneHash),
+
+  index("idx_contacts_phone_hash")
+    .on(t.phoneHash),
 ]);
 
 export const familyInvites = pgTable("family_invites", {

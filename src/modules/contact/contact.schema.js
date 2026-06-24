@@ -8,3 +8,7 @@ export const contactSyncSchema = z.object({
     })
   ),
 }).strict();
+
+export const contactLookupSchema = z.object({
+  contact_hash: z.string({required_error:"Contact hash is required"}).min(1,"Contact hash cannot be empty").trim(),
+}).strict();

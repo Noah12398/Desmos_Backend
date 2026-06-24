@@ -26,8 +26,8 @@ export async function signin(data) {
   });
 }
 
-export async function me(phone) {
-  const user = await userRepo.findUserDetailsByPhone(phone);
+export async function me(id) {
+  const user = await authRepo.findUserDetailsById(id);
   if (!user) {
     throw new NotFoundError('User not found');
   }

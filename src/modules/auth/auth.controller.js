@@ -15,7 +15,7 @@ export async function signin(req, res, next) {
 
 export async function me(req, res, next) {
   try {
-    const user = await authService.me(req.user.phone);
+    const user = await authService.me(req.user.id);
     return ok(res, user);
   } catch (error) {
     next(error);

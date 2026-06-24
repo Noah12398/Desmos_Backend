@@ -12,7 +12,7 @@ export function normalizePhone(phone) {
   }
 
   if (!digits.startsWith('91')) {
-    throw new Error('Invalid Indian phone number');
+    throw new BadRequestError('Invalid Indian phone number');
   }
 
   return `+${digits}`;

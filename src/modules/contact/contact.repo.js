@@ -1,7 +1,7 @@
 import { db } from '../../config/db.js';
-import { contacts } from '../../db/schema.js';
+import { contacts, familyMembers, users } from '../../db/schema.js';
 import { dbAction } from '../../utils/helpers.js';
-import { sql } from 'drizzle-orm'; 
+import { sql, eq, inArray, and } from 'drizzle-orm'; 
 
 export const syncContacts = dbAction(
   async ({ userId, contacts: contactsToSync }) => {
@@ -25,5 +25,44 @@ export const syncContacts = dbAction(
       });
 
     return inserted;
+  }
+);
+
+
+export const lookupContacts = dbAction(
+  async ({ contact_hash, userId }) => {
+
+    const familyIdsSubquery = db
+      .select({ groupId: familyMembers.groupId })
+      .from(familyMembers)
+      .where(eq(familyMembers.userId, userId));
+
+    const result = await db
+      .select({
+        id: contacts.id,
+        displayName: contacts.displayName,
+        ownerUserId: contacts.ownerUserId,
+        ownerName: users.name,
+      })
+      .from(contacts)
+      .innerJoin(
+        users,
+        eq(users.id, contacts.ownerUserId)
+      )
+      .innerJoin(
+        familyMembers,
+        eq(familyMembers.userId, contacts.ownerUserId)
+      )
+      .where(
+        and(
+          eq(contacts.phoneHash, contact_hash),
+          inArray(
+            familyMembers.groupId,
+            familyIdsSubquery
+          )
+        )
+      );
+
+    return result;
   }
 );
