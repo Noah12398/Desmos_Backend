@@ -4,22 +4,21 @@ import { eq } from 'drizzle-orm';
 import { dbAction } from '../../utils/helpers.js';
 
 export const findUserByPhone = dbAction(async (phone) => {
-  const [user] = await db
-    .select({
-      id: users.id,
-      fcm_token: users.fcm_token
-    })
-    .from(users)
-    .where(eq(users.phone, phone))
-    .limit(1);
+  const [user]=await db.select({
+    id: users.id,
+    fcm_token: users.fcm_token
+  })
+  .from(users)
+  .where(eq(users.phone, phone))
+  .limit(1);
   return user;
 });
 
-export const findUserDetailsByPhone = dbAction(async (phone) => {
+export const findUserDetailsById = dbAction(async (id) => {
   const [user] = await db
     .select()
     .from(users)
-    .where(eq(users.phone, phone))
+    .where(eq(users.id, id))
     .limit(1);
   return user;
 });
