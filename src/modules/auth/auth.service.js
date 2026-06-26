@@ -1,31 +1,52 @@
 import * as authRepo from './auth.repo.js';
 import * as userRepo from '../user/user.repo.js';
-import { NotFoundError } from '../../utils/errors.js';
+import { NotFoundError, BadRequestError } from '../../utils/errors.js';
 
 /**
- * Handle user sign-in or registration
- * @param {object} data - Raw request body
- * @returns {Promise<object>} The signed-in or created user
+ * POST /auth/signin
+ * - Existing user: update fcm_token if changed, return user
+ * - New user: return { isNewUser: true }
  */
 export async function signin(data) {
-  // Data is assumed to be already validated
   let user = await authRepo.findUserByPhone(data.phone);
 
   if (user) {
     if (data.fcm_token && user.fcm_token !== data.fcm_token) {
       user = await userRepo.updateFcmToken(user.id, data.fcm_token);
     }
-    return user;
+    return { isNewUser: false, user };
+  }
+
+  // User does not exist yet — tell the app to show CompleteProfileScreen
+  return { isNewUser: true };
+}
+
+/**
+ * POST /auth/register
+ * - Creates a new user after the CompleteProfileScreen submits name + fcm_token
+ */
+export async function register(data) {
+  // Guard: if user already exists, just return them
+  const existing = await authRepo.findUserByPhone(data.phone);
+  if (existing) {
+    return existing;
+  }
+
+  if (!data.name) {
+    throw new BadRequestError('Name is required');
   }
 
   return await userRepo.createUser({
     name: data.name,
     phone: data.phone,
     fcm_token: data.fcm_token,
-    userId: data.userId
+    userId: data.userId,
   });
 }
 
+/**
+ * GET /auth/me
+ */
 export async function me(id) {
   const user = await authRepo.findUserDetailsById(id);
   if (!user) {

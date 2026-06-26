@@ -1,9 +1,13 @@
 import { z } from 'zod';
 
-export const createUserSchema = z.object({
-  name: z.string({ required_error: "Name is required" })
+export const signinSchema = z.object({
+  fcm_token: z.string().optional(),
+}).strict();
+
+export const registerSchema = z.object({
+  name: z.string()
     .trim()
-    .min(1, "Name cannot be empty")
-    .max(15, "Name cannot exceed 15 characters"),
+    .min(1, 'Name is required')
+    .max(15, 'Name cannot exceed 15 characters'),
   fcm_token: z.string().optional(),
 }).strict();

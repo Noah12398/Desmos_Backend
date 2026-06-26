@@ -53,6 +53,12 @@ export class UnauthorizedError extends AppError {
   }
 }
 
+export class BadRequestError extends AppError {
+  constructor(message) {
+    super(400, ERROR_CODES.bad_request, message);
+  }
+}
+
 export class ValidationError extends AppError {
   constructor(message) {
     super(422, ERROR_CODES.validation_error, message);

@@ -1,13 +1,22 @@
-import { createUserSchema } from '../user/user.schema.js';
+import { signinSchema, registerSchema } from '../user/user.schema.js';
 import { ok } from '../../utils/helpers.js';
 import * as authService from './auth.service.js';
 
 export async function signin(req, res, next) {
   try {
-    // Validate request body and merge with verified phone
-    const validated = createUserSchema.parse(req.body);
-    const user = await authService.signin({ ...validated, phone: req.user.phone, userId: req.user.id });
-    return ok(res, user);
+    const validated = signinSchema.parse(req.body);
+    const result = await authService.signin({ ...validated, phone: req.user.phone, userId: req.user.id });
+    return ok(res, result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function register(req, res, next) {
+  try {
+    const validated = registerSchema.parse(req.body);
+    const user = await authService.register({ ...validated, phone: req.user.phone, userId: req.user.id });
+    return ok(res, user, 201);
   } catch (error) {
     next(error);
   }
