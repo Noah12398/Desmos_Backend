@@ -12,13 +12,13 @@ export async function authMiddleware(req, res, next) {
     if (error || !user) {
       throw new UnauthorizedError('Invalid or expired token');
     }
-    const phone = user.phone || user.user_metadata?.phone;
-    if (!phone) {
-      throw new UnauthorizedError('Phone number not found in token');
+    const email = user.email || user.user_metadata?.email;
+    if (!email) {
+      throw new UnauthorizedError('Email not found in token');
     }
     req.user = {
       id: user.id,
-      phone
+      email
     };
     next();
   } catch (error) {

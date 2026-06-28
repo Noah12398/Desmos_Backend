@@ -5,13 +5,13 @@ import { dbAction } from '../../utils/helpers.js';
 
 
 // Create a new user (wrapped in dbAction)
-export const createUser = dbAction(async ({ name, phone, fcm_token,userId }) => {
+export const createUser = dbAction(async ({ name, email, fcm_token,userId }) => {
   const [newuser] = await db
     .insert(users)
     .values({
       id:userId,
       name,
-      phone,
+      email,
       fcm_token
     })
     .returning();

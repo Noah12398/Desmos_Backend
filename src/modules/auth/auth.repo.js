@@ -3,13 +3,13 @@ import { users } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { dbAction } from '../../utils/helpers.js';
 
-export const findUserByPhone = dbAction(async (phone) => {
+export const findUserByEmail = dbAction(async (email) => {
   const [user]=await db.select({
     id: users.id,
     fcm_token: users.fcm_token
   })
   .from(users)
-  .where(eq(users.phone, phone))
+  .where(eq(users.email, email))
   .limit(1);
   return user;
 });

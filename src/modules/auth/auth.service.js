@@ -8,7 +8,7 @@ import { NotFoundError, BadRequestError } from '../../utils/errors.js';
  * - New user: return { isNewUser: true }
  */
 export async function signin(data) {
-  let user = await authRepo.findUserByPhone(data.phone);
+  let user = await authRepo.findUserByEmail(data.email);
 
   if (user) {
     if (data.fcm_token && user.fcm_token !== data.fcm_token) {
@@ -27,7 +27,7 @@ export async function signin(data) {
  */
 export async function register(data) {
   // Guard: if user already exists, just return them
-  const existing = await authRepo.findUserByPhone(data.phone);
+  const existing = await authRepo.findUserByEmail(data.email);
   if (existing) {
     return existing;
   }
@@ -38,7 +38,7 @@ export async function register(data) {
 
   return await userRepo.createUser({
     name: data.name,
-    phone: data.phone,
+    email: data.email,
     fcm_token: data.fcm_token,
     userId: data.userId,
   });

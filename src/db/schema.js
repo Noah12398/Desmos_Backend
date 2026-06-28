@@ -12,7 +12,7 @@ import {
 export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 15 }).notNull(),
-  phone: text("phone").notNull().unique(),
+  email: text("email").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   fcm_token: varchar("fcm_token", { length: 255 })
 });

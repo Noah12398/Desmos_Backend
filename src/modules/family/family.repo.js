@@ -43,7 +43,7 @@ export const getFamilyMembers = dbAction(async ({ id: groupId }) => {
     .select({
       id: users.id,
       name: users.name,
-      phone: users.phone,
+      email: users.email,
       role: familyMembers.role,
     })
     .from(familyMembers)

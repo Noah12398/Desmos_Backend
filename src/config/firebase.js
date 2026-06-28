@@ -1,14 +1,25 @@
-import admin from "firebase-admin";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+
+let app = null;
 
 if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-  console.warn("WARNING: FIREBASE_SERVICE_ACCOUNT environment variable is not set. Push notifications will not function.");
+  console.warn(
+    "WARNING: FIREBASE_SERVICE_ACCOUNT environment variable is not set."
+  );
 } else {
   try {
     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  } catch (error) {
-    console.error("ERROR: Failed to initialize Firebase Admin SDK. Please check your FIREBASE_SERVICE_ACCOUNT env value.", error);
+
+    if (getApps().length === 0) {
+      app = initializeApp({
+        credential: cert(serviceAccount),
+      });
+    } else {
+      app = getApps()[0];
+    }
+  } catch (err) {
+    console.error("Firebase initialization failed:", err);
   }
 }
+
+export default app;

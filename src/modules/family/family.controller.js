@@ -50,9 +50,9 @@ export async function getFamilies(req, res, next) {
 export async function inviteUser(req,res,next){
   try{
     const {id: groupId}=req.params; 
-    const {phone}=req.body;
+    const {email}=req.body;
     const inviterId=req.user.id;
-    const validated=inviteSchema.parse({groupId,inviterId,phone});
+    const validated=inviteSchema.parse({groupId,inviterId,email});
     const invite=await familyService.inviteUser(validated);
     return ok(res,invite);
   }catch(error){
