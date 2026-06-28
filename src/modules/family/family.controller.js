@@ -58,4 +58,4 @@ export async function inviteUser(req,res,next){
   }catch(error){
     next(error);
   }
-}
+} 
