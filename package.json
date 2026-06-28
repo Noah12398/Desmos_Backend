@@ -25,7 +25,8 @@
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.10",
+    "jest": "^29.0.0",
     "supertest": "^6.3.3",
-    "jest": "^29.0.0"
+    "ws": "^8.21.0"
   }
 }
