@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: desmos-backend
+    env: node
+    buildCommand: npm ci
+    startCommand: npm start
+    autoDeploy: true
