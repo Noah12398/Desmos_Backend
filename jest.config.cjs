@@ -4,5 +4,7 @@ module.exports = {
   verbose: true,
   collectCoverage: true,
   coverageDirectory: 'coverage',
-  testPathIgnorePatterns: ['/node_modules/'],
+  nodeOptions: '--experimental-vm-modules',
+  transform: {},
 };
+

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest --detectOpenHandles --forceExit",
   },
   "keywords": [],
   "author": "",
