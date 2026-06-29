@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import './config/firebase.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import userRoutes from './modules/user/user.routes.js';
 import familyRoutes from './modules/family/family.routes.js';
 import inviteRoutes from './modules/invite/invite.routes.js';
 import contactRoutes from './modules/contact/contact.routes.js';
@@ -25,6 +26,7 @@ app.get('/health', async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/families', familyRoutes);
 app.use('/api/invites', inviteRoutes);
 app.use('/api/contacts',contactRoutes)
@@ -32,3 +34,4 @@ app.use('/api/contacts',contactRoutes)
 app.use(errorHandler);
 
 export default app;
+
