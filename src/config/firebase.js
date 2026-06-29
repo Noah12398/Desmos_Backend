@@ -13,15 +13,12 @@ let app = null;
 let serviceAccount = null;
 if (process.env.FIREBASE_SERVICE_ACCOUNT) {
   try {
-    // Fix broken escape sequences: any lone \ not followed by a valid JSON
-    // escape char is a corrupted \\n (PEM line break). Replace with \\n.
-    const fixed = process.env.FIREBASE_SERVICE_ACCOUNT.replace(
-      /\\(?!["\\\/bfnrtu])/g,
-      "\\n"
-    );
-    serviceAccount = JSON.parse(fixed);
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   } catch (err) {
     console.error("Firebase env var JSON parse error:", err.message);
+    console.error(
+      process.env.FIREBASE_SERVICE_ACCOUNT.substring(1500, 1600)
+    );
   }
 }
 
